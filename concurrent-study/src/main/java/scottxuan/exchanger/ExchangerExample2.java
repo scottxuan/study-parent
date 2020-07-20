@@ -1,4 +1,4 @@
-package scottxuan.exchange;
+package scottxuan.exchanger;
 
 import lombok.extern.slf4j.Slf4j;
 

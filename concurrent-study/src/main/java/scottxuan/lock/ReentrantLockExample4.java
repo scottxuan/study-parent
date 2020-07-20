@@ -29,7 +29,11 @@ public class ReentrantLockExample4 {
         for (int i = 0; i < threadCount; i++) {
             final int num = i;
             service.execute(()->{
-                add(num);
+                try {
+                    add(num);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 downLatch.countDown();
             });
         }
@@ -42,8 +46,7 @@ public class ReentrantLockExample4 {
         service.shutdown();
     }
 
-    @SneakyThrows
-    public static void add(int num){
+    public static void add(int num) throws InterruptedException {
         //尝试获取锁并设置等待时间,如果在等待时间内该锁未被其他线程持有,则获取到,如果超过等待时间为获取到锁,直接返回false,不再阻塞
         if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
             try {

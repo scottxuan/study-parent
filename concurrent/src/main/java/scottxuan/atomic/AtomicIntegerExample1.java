@@ -30,7 +30,7 @@ public class AtomicIntegerExample1 {
         }
         //主线程阻塞,等待所有线程执行完毕,才会执行后续的代码
         countDownLatch.await();
-        log.info("all thread finish,count:"+count.get());
+        log.info("all thread finish,count:{}",count);
         executor.shutdown();
     }
 

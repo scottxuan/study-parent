@@ -6,7 +6,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 
-public class ObjectInterceptor implements MethodInterceptor {
+public class DynamicProxyInterceptor implements MethodInterceptor {
     private Enhancer enhancer = new Enhancer();
 
     public Object getProxy(Class clazz) {

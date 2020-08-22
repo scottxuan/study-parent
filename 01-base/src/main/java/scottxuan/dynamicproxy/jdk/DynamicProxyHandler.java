@@ -3,11 +3,11 @@ package scottxuan.dynamicproxy.jdk;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class UserInvocationHandler<T> implements InvocationHandler {
+public class DynamicProxyHandler<T> implements InvocationHandler {
 
     private final T target;
 
-    public UserInvocationHandler(T target) {
+    public DynamicProxyHandler(T target) {
         this.target = target;
     }
 

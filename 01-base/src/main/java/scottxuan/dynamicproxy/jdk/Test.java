@@ -8,7 +8,7 @@ import java.lang.reflect.Proxy;
 @Slf4j
 public class Test {
     public static void main(String[] args) {
-        InvocationHandler handler = new UserInvocationHandler<>(new UserServiceImpl());
+        InvocationHandler handler = new DynamicProxyHandler<>(new UserServiceImpl());
         UserService userService = (UserService)Proxy.newProxyInstance(UserService.class.getClassLoader(), new Class<?>[]{UserService.class}, handler);
         userService.findByCode("code");
     }

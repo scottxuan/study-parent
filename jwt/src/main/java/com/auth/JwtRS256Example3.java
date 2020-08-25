@@ -26,16 +26,16 @@ public class JwtRS256Example3 {
     public static long outTime = 1000 * 60 * 60L;
 
     public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        String url1 = JwtRS256Example3.class.getClassLoader().getResource("").toString();
-        byte[] bytes = Files.readAllBytes(new File(url1+"rsa_private_key.pem").toPath());
+        String url1 = JwtRS256Example3.class.getClassLoader().getResource("rsa_private_key.pem").getFile();
+        byte[] bytes = Files.readAllBytes(new File(url1).toPath());
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(bytes);
         KeyFactory factory = KeyFactory.getInstance("RSA");
         return factory.generatePrivate(spec);
     }
 
     public static PublicKey getPublicKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        String url1 = JwtRS256Example3.class.getClassLoader().getResource("").toString();
-        byte[] bytes = Files.readAllBytes(new File(url1+"rsa_public_key.pem").toPath());
+        String url1 = JwtRS256Example3.class.getClassLoader().getResource("").getFile();
+        byte[] bytes = Files.readAllBytes(new File(url1).toPath());
         X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
         KeyFactory factory = KeyFactory.getInstance("RSA");
         return factory.generatePublic(spec);

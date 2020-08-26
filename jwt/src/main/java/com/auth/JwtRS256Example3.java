@@ -5,8 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.crypto.RsaProvider;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -22,23 +21,36 @@ import java.util.List;
 @Slf4j
 public class JwtRS256Example3 {
 
-    public static String salf = "xuan";
     public static long outTime = 1000 * 60 * 60L;
 
-    public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        String url1 = JwtRS256Example3.class.getClassLoader().getResource("rsa_private_key.pem").getFile();
-        byte[] bytes = Files.readAllBytes(new File(url1).toPath());
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(bytes);
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-        return factory.generatePrivate(spec);
+    public static String getPrivateKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        InputStream inputStream = JwtRS256Example3.class.getResourceAsStream("/rsa_private_key.pem");
+        String builderStr = getKey(inputStream);
+        return builderStr.replaceAll("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll("-----END PRIVATE KEY-----", "")
+                .replaceAll("\r", "")
+                .replaceAll("\n", "")
+                .replaceAll("\r\n", "");
     }
 
-    public static PublicKey getPublicKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        String url1 = JwtRS256Example3.class.getClassLoader().getResource("").getFile();
-        byte[] bytes = Files.readAllBytes(new File(url1).toPath());
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-        return factory.generatePublic(spec);
+    private static String getKey(InputStream inputStream) throws IOException {
+        Reader reader = new InputStreamReader(inputStream, "UTF-8");
+        StringBuilder builder = new StringBuilder();
+        int n;
+        while ((n = reader.read()) != -1) {
+            builder.append((char) n);
+        }
+        return builder.toString();
+    }
+
+    public static String getPublicKey() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        InputStream inputStream = JwtRS256Example3.class.getResourceAsStream("/rsa_public_key.pem");
+        String builderStr = getKey(inputStream);
+        return builderStr.replaceAll("-----BEGIN PUBLIC KEY-----", "")
+                .replaceAll("-----END PUBLIC KEY-----", "")
+                .replaceAll("\r", "")
+                .replaceAll("\n", "")
+                .replaceAll("\r\n", "");
     }
 
     public static String createJwt(Object userInfo, List<String> roles, List<String> permissions,PrivateKey privateKey){
@@ -63,12 +75,12 @@ public class JwtRS256Example3 {
         return claimsJws.getBody();
     }
 
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        PrivateKey privateKey = getPrivateKey();
-        PublicKey publicKey = getPublicKey();
-        String jwt = createJwt("zhaoxuan", Lists.newArrayList("admin"), Lists.newArrayList("all"),privateKey);
+    public static void main(String[] args) throws Exception {
+        String privateKey = getPrivateKey();
+        String publicKey = getPublicKey();
+        String jwt = createJwt("zhaoxuan", Lists.newArrayList("admin"), Lists.newArrayList("all"),RSAUtils.getPrivateKey(privateKey));
         log.info("jwt:{}",jwt);
-        Claims claims = parserUserToken(jwt, publicKey);
+        Claims claims = parserUserToken(jwt, RSAUtils.getPublicKey(publicKey));
         Object userInfo = claims.get("userInfo");
         Object roles = claims.get("roles");
         Object permissions = claims.get("permissions");

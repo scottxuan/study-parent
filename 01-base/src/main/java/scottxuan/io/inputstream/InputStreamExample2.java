@@ -1,4 +1,4 @@
-package scottxuan.io;
+package scottxuan.io.inputstream;
 
 import lombok.extern.slf4j.Slf4j;
 
